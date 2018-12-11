@@ -1,6 +1,7 @@
 import React from "react";
-import Card from "./Card";
-import "./Hand.scss";
+import Card from "../Components/Card.jsx";
+
+import "../Styles/Hand.scss";
 
 const SPECIAL_VALUES = {
   ACE: 1,
@@ -10,7 +11,7 @@ const SPECIAL_VALUES = {
 };
 
 export default class Hand extends React.Component {
-  _getCardValue(value) {
+  _getCardNumericalValue(value) {
     return SPECIAL_VALUES[value]
       ? SPECIAL_VALUES[value]
       : Number.parseInt(value);
@@ -18,11 +19,12 @@ export default class Hand extends React.Component {
 
   render() {
     const cards = this.props.cards.map((card, idx) => {
-      const leftShift = idx * 70 + "px";
       return (
         <Card
           key={card.value + card.suit}
           idx={idx}
+          player={this.props.player}
+          cardFlipAction={this.props.cardFlipAction}
           numCards={this.props.cards.length}
           card={card}
         />
@@ -30,17 +32,15 @@ export default class Hand extends React.Component {
     });
 
     let score = 0;
-    const values = this.props.cards.map(card => card.value);
-    if (values.length === 1) {
-      score = this._getCardValue(values[0]);
-    } else if (values.length > 1) {
-      values.forEach(value => (score += this._getCardValue(value)));
-    }
+    this.props.cards
+      .filter(card => card.faceUp)
+      .map(card => card.value)
+      .forEach(value => (score += this._getCardNumericalValue(value)));
 
     return (
       <div className="Hand">
         <h2>
-          {this.props.player} - {score}
+          {this.props.player} {score ? `: ${score}` : ""}
         </h2>
         <div className="card-container">{cards}</div>
       </div>

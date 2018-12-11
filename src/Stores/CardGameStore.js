@@ -1,18 +1,22 @@
 import Reflux from "reflux";
+import { cloneDeep } from "lodash";
 
 const BASE_URL = "https://deckofcardsapi.com/api/";
-const INITIAL_HAND_SIZE = 1;
-const PLAYERS = ["Dealer", "P"];
+const PLAYERS = ["Dealer", "Player1", "Player2"];
 
 export default class CardGameStore extends Reflux.Store {
   constructor() {
     super();
-    const Actions = Reflux.createActions(["startGame", "resetGame", "draw"]);
+    const Actions = Reflux.createActions([
+      "startGame",
+      "resetGame",
+      "draw",
+      "flipCard"
+    ]);
 
     this.defaultState = {
       actions: Actions,
       isGameOver: true,
-      players: PLAYERS,
       currentPlayerIndex: 0,
       turn: 0,
       dealtCards: null,
@@ -24,6 +28,7 @@ export default class CardGameStore extends Reflux.Store {
     this.listenTo(Actions.startGame, this._onStartGame);
     this.listenTo(Actions.resetGame, this._onResetGame);
     this.listenTo(Actions.draw, this._onDraw);
+    this.listenTo(Actions.flipCard, this._onFlipCard);
   }
 
   _assignCards(cards) {
@@ -47,10 +52,18 @@ export default class CardGameStore extends Reflux.Store {
     };
   }
 
+  _onFlipCard(player, cardCode) {
+    const dealtCards = cloneDeep(this.state.dealtCards);
+    const cardToFlipIndex = dealtCards[player].findIndex(
+      card => card.code === cardCode
+    );
+    dealtCards[player][cardToFlipIndex].faceUp = !dealtCards[player][
+      cardToFlipIndex
+    ].faceUp;
+    this.setState({ dealtCards: dealtCards });
+  }
+
   _onDraw(numCards = PLAYERS.length) {
-    if (this.state.turn === 0) {
-      numCards = PLAYERS.length * INITIAL_HAND_SIZE;
-    }
     fetch(BASE_URL + `deck/${this.deckId}/draw/?count=${numCards}`)
       .then(response => response.json())
       .then(data => {
