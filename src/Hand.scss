@@ -1,0 +1,8 @@
+.Hand {
+  .card-container {
+    display: flex;
+    flex-wrap: nowrap;
+    transform-origin: center 500px;
+    position: relative;
+  }
+}

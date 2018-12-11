@@ -1,2 +1,0 @@
-# CardApp
-Created with CodeSandbox

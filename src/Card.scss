@@ -1,0 +1,53 @@
+.Card {
+  min-height: 200px;
+  min-width: 150px;
+  position: relative;
+  background: #3e3e3e;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  border: 1px solid #ebebeb;
+
+  &.HEARTS,
+  &.DIAMONDS {
+    background-color: #782a2a;
+    .value-inverted {
+      color: #3a0909;
+    }
+    .overlay {
+      background-color: #3a0909;
+    }
+  }
+
+  p {
+    font-family: Roboto;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .value-inverted {
+    transform: rotate(-180deg);
+    padding-left: 4px;
+    padding-top: 2px;
+    font-size: 22px;
+    color: #252525;
+  }
+
+  .suit {
+    align-self: center;
+    color: #ebebeb;
+    font-size: 50px;
+  }
+
+  .overlay {
+    width: 100%;
+    background: #252525;
+
+    .value-large {
+      margin-top: 12px;
+      margin-left: 4px;
+      color: #ebebeb;
+      font-size: 30px;
+    }
+  }
+}
